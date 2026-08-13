@@ -1,2 +1,1 @@
-data/sec/bulk/runs/*/archives/*.zip
-data/sec/bulk/runs/*/archives/*.partial
+data/*
