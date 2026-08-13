@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "DEV_RELOAD=1 node --watch-path=server.mjs --watch-path=agp_mechanical_screen.csv --watch-path=data/sec server.mjs",
     "ingest:sec:bulk": "node scripts/ingest-sec-bulk.mjs",
+    "rebuild:sec-db": "node scripts/rebuild-sec-db.mjs",
     "start": "node server.mjs",
     "test": "node --test"
   },

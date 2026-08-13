@@ -21,12 +21,13 @@ The complete methodology is documented in [AGP_INVESTMENT_RULES.md](AGP_INVESTME
 - Searchable, sortable, and filterable stock universe.
 - Aggregate views for every collected field.
 - Company SEC-facts pages with definitions and filing metadata.
-- Immutable, timestamped SEC bulk-archive ingestion.
+- Immutable SEC bulk archives with a disposable SQLite query cache.
 - Live-reloading development environment and production Docker image.
 
 ## Requirements
 
 - Docker Desktop, or Node.js 20 or newer.
+- SQLite's `sqlite3` command-line client for SEC cache rebuilds.
 - An identifying SEC user agent for SEC downloads, such as `Your Name your-email@example.com`.
 
 ## Start the Application
@@ -64,7 +65,7 @@ Use `npm start` instead of `npm run dev` to run without file watching.
 
 ## SEC Bulk Ingestion
 
-The worker downloads the SEC's nightly submissions and Company Facts archives, maps the stock universe to CIKs, and stores immutable timestamped snapshots.
+The worker downloads the SEC's nightly submissions and Company Facts archives, retains them as immutable source data, and rebuilds a disposable SQLite cache. It does not depend on `agp_mechanical_screen.csv`.
 
 ```bash
 SEC_USER_AGENT="Your Name your-email@example.com" npm run ingest:sec:bulk
@@ -73,7 +74,7 @@ SEC_USER_AGENT="Your Name your-email@example.com" npm run ingest:sec:bulk
 For previously downloaded archives:
 
 ```bash
-SEC_ARCHIVE_DIR=/path/to/archives npm run ingest:sec:bulk
+npm run rebuild:sec-db -- --archive-dir /path/to/archives --database data/sec/sec-cache.sqlite
 ```
 
 That directory must contain `submissions.zip` and `companyfacts.zip`. See [docs/sec-bulk-ingestion.md](docs/sec-bulk-ingestion.md) for storage details.
@@ -96,8 +97,10 @@ Do not commit:
 ```text
 public/                         Browser application
 server.mjs                     Node HTTP and data API server
-lib/sec-bulk-ingest.mjs        SEC archive ingestion library
-scripts/ingest-sec-bulk.mjs    Nightly bulk-ingestion command
+lib/sec-bulk-ingest.mjs        SEC archive download/streaming helpers
+lib/sec-sqlite-etl.mjs         Archive-to-SQLite ETL
+scripts/ingest-sec-bulk.mjs    Download-and-rebuild command
+scripts/rebuild-sec-db.mjs     Local-archive rebuild command
 scripts/build_agp_mechanical_csv.mjs
 test/                           Automated tests
 docs/                           Supporting documentation
