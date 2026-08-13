@@ -1,0 +1,5 @@
+.git
+node_modules
+npm-debug.log
+test
+AGP_INVESTMENT_RULES.md

@@ -1,0 +1,18 @@
+{
+  "name": "agp-stock-screener",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "DEV_RELOAD=1 node --watch-path=server.mjs --watch-path=agp_mechanical_screen.csv --watch-path=data/sec server.mjs",
+    "ingest:sec:bulk": "node scripts/ingest-sec-bulk.mjs",
+    "start": "node server.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "yauzl": "^3.4.0"
+  }
+}
